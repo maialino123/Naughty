@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title></title>
+	<link rel="stylesheet" href="">
+	<style type="text/css" media="screen">
+		body {
+			background-color: #F5B7B1;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			height: 100vh;
+		}
+		.container {
+			position: relative;
+		}
+		.ball {
+			position: relative;
+			overflow: hidden;
+			width: 180px;
+			height: 180px;
+			border-radius: 50%;
+			background-color: white;
+			box-shadow: inset -5px -5px 5px rgba(0, 0, 0, 0.07);
+			animation: bounceball alternate infinite 400ms 40ms ease-in-out;
+
+		}
+
+		.iris {
+			position: absolute;
+			width: 40%;
+			height: 40%;
+			background-color: #229954;
+			border-radius: 50%;
+			left: 30%;
+			top: 30%;
+			transform: translateX(0px) translateY(0px) skewX(0deg) skewY(0deg);
+		}
+
+		.iris:before {
+			content: "";
+			position: absolute;
+			width: 35%;
+			height: 35%;
+			border-radius: 50%;
+			background-color: black;
+			top: 30%;
+			left:  30%;
+		}
+		.iris:after {
+			content: "";
+			position: absolute;
+			width: 15px;
+			height: 15px;
+			background-color: rgba(255, 255, 255, 0.43);
+			border-radius:  50%;
+			left: 20%;
+			top: 22%;
+		}
+		.shadow {
+			position: absolute;
+			width: 160px;
+			height: 60px;
+			border-radius: 50%;
+			background-color: rgba(0, 0, 0, 0.09);
+			top: 190px;
+			left: 14px;
+			animation: bounceball alternate infinite 400ms 40ms ease-in-out;
+		}
+
+		@keyframes bounceball{
+			to {
+				transform: scaleX(1.03) scaleY(0.97);
+			}
+
+		}
+
+		.cursor {
+			width: 20px;
+			height: 20px;
+			border: 1px solid white;
+			border-radius: 50%;
+			position: absolute;
+			transition-duration: 200ms;
+			transition-timing-function: ease-out;
+			animation: cursorAnim .5s infinite alternate;
+			pointer-events: none;
+		}
+
+		.cursor::after {
+			content: "";
+			width: 20px;
+			height: 20px;
+			position: absolute;
+			border: 8px solid gray;
+			border-radius: 50%;
+			opacity: .5;
+			top: -8px;
+			left: -8px;
+			animation: cursorAnim2 .5s infinite alternate;
+		}
+
+		@keyframes cursorAnim {
+			from {
+				transform: scale(1);
+			}
+			to {
+				transform: scale(.7);
+			}
+		}
+
+		@keyframes cursorAnim2 {
+			from {
+				transform: scale(1);
+			}
+			to {
+				transform: scale(.4);
+			}
+		}
+
+		@keyframes cursorAnim3 {
+			0% {
+				transform: scale(1);
+			}
+			50% {
+				transform: scale(3);
+			}
+			100% {
+				transform: scale(1);
+				opacity: 0;
+			}
+		}
+
+		.expand {
+			animation: cursorAnim3 .5s forwards;
+			border: 1px solid red;
+		}
+	</style>
+</head>
+<body>
+	<div class="cursor"></div>
+	<div class="container">
+		<div class="ball">
+			<div class="iris">
+				
+			</div>
+		</div>
+		<div class="shadow">
+			
+		</div>
+	</div>
+
+
+
+	<script
+	src="https://code.jquery.com/jquery-3.5.1.js"
+	integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc="
+	crossorigin="anonymous"></script>
+
+	<script type="text/javascript">
+		$(function() {
+			var midwidth = Math.floor($(window).width() / 2);
+			var midHeight = 100;
+			var mousePos = {
+				x: midwidth,
+				y: midHeight
+			};
+			$(document).mousemove(function(event){
+				mousePos.x = event.pageX;
+				mousePos.y = event.pageY;
+				var transX = mousePos.x - midwidth;
+				var transY = mousePos.y - midHeight;
+				var skewX = 0;
+				if (transX>-30 && transX < 30 && transY < 0) {
+					skewX = transX / 2;
+				} else if (transX > -30 && transX < 30 && transY >= 0) {
+					skewX = -(transX / 2);
+				} else if (transX > 30) {
+					skewX = transY / 2;
+				} 
+				if (transX >= 30) {
+					transX = 30;
+				} else if (transX <= -30) {
+					transX = -30;
+				} 
+				if (transY >= 30) {
+					transY = 30;
+				} else if (transY <= -30) {
+					transY = -30;
+				}
+				if (skewX >= 15) {
+					skewX = 15;
+				} else if (skewX <= -15) {
+					skewX = -15;
+				}
+
+				$('.iris').css({
+					"transform": "translateX("+ transX +"px) translateY("+ transY +"px) skewX("+ skewX +"deg) skewY(2deg)",
+					
+				});
+				
+
+			});
+		})
+	</script>
+	
+	<script type="text/javascript">
+		const cursor = document.querySelector('.cursor');
+
+		document.addEventListener('mousemove', e => {
+			cursor.setAttribute("style", "top: "+(e.pageY - 10)+"px; left: "+(e.pageX - 10)+"px;")
+		})
+
+		document.addEventListener('click', () => {
+			cursor.classList.add("expand");
+
+			setTimeout(() => {
+				cursor.classList.remove("expand");
+			}, 500)
+		})
+	</script>
+</body>
+</html>
